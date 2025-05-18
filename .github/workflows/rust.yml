@@ -23,7 +23,7 @@ jobs:
           cd crates/ironrdp-client
           cargo build --release
           echo "=== Build output files in target/release ==="
-          ls -l /Users/runner/work/IronRDP/
+          ls -l /Users/runner/work/IronRDP/IronRDP/
 
       - name: Upload ironrdp-client artifact
         uses: actions/upload-artifact@v4
