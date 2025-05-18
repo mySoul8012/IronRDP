@@ -1,4 +1,4 @@
-name: Build IronRDP Client macOS App
+name: Build IronRDP Client
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest  # 使用 macOS runner 以编译 macOS 应用
 
     steps:
       - name: Checkout repository
@@ -18,21 +18,49 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Install cargo-bundle
-        run: cargo install cargo-bundle
-
-      - name: Build ironrdp-client .app bundle
+      - name: Build ironrdp-client
         run: |
           cd crates/ironrdp-client
-          cargo bundle --release
-          echo "=== Contents of target/release/bundle/osx ==="
-          ls -alh target/release/bundle/osx
+          cargo build --release
+          echo "=== Build output files in target/release ==="
+          ls -l target/release/
 
-      - name: Upload ironrdp-client .app bundle
+      - name: Bundle as macOS .app
+        run: |
+          cd crates/ironrdp-client
+          APP_NAME="ironrdp-client"
+          APP_DIR="${APP_NAME}.app"
+          mkdir -p "${APP_DIR}/Contents/MacOS"
+          cp "target/release/${APP_NAME}" "${APP_DIR}/Contents/MacOS/${APP_NAME}"
+          # 创建 Info.plist 文件
+          cat > "${APP_DIR}/Contents/Info.plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key>
+  <string>${APP_NAME}</string>
+  <key>CFBundleDisplayName</key>
+  <string>${APP_NAME}</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.example.${APP_NAME}</string>
+  <key>CFBundleVersion</key>
+  <string>0.1.0</string>
+  <key>CFBundleExecutable</key>
+  <string>${APP_NAME}</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+</dict>
+</plist>
+EOF
+          echo "=== .app bundle structure ==="
+          find "${APP_DIR}"
+
+      - name: Upload ironrdp-client.app artifact
         uses: actions/upload-artifact@v4
         with:
           name: ironrdp-client-macos-app
-          path: crates/ironrdp-client/target/release/bundle/osx/ironrdp-client.app
+          path: crates/ironrdp-client/ironrdp-client.app
           if-no-files-found: error
           compression-level: 6
           overwrite: false
