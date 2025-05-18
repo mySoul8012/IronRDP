@@ -84,3 +84,14 @@ windows = { version = "0.61", features = ["Win32_Foundation"] }
 
 [lints]
 workspace = true
+
+
+
+[package.metadata.bundle]
+name = "ironrdp-client"
+identifier = "com.example.ironrdp-client"
+icon = "assets/icon.icns"
+version = "0.1.0"
+short_description = "IronRDP macOS client"
+long_description = "A macOS GUI client for IronRDP"
+
