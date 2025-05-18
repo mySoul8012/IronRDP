@@ -23,7 +23,7 @@ jobs:
           cd crates/ironrdp-client
           cargo build --release
           echo "=== Build output files in target/release ==="
-          ls -l /Users/runner/work/IronRDP
+          ls -l /Users/runner/work/IronRDP/target
           ls -l /Users/runner/work/IronRDP/IronRDP
           ls -l /Users/runner/work/IronRDP/IronRDP/crates/
           ls -l /Users/runner/work/IronRDP/IronRDP/crates/ironrdp-client
