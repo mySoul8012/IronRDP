@@ -27,6 +27,8 @@ jobs:
           cargo bundle --release
           echo "=== Contents of target/release/bundle/osx ==="
           ls -alh target/release/bundle/osx
+          echo "=== Contents of /Users/runner/work/IronRDP/IronRDP ==="
+          ls -alh /Users/runner/work/IronRDP/IronRDP
 
       - name: Upload ironrdp-client .app bundle
         uses: actions/upload-artifact@v4
