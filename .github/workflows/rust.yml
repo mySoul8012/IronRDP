@@ -2,13 +2,11 @@ name: Build IronRDP Client
 
 on:
   push:
-    branches:
-      - main
   pull_request:
 
 jobs:
   build:
-    runs-on: macos-latest  # macOS runner 适合编译 macOS 程序
+    runs-on: macos-latest  # 使用 macOS runner 以编译 macOS 应用
 
     steps:
       - name: Checkout repository
@@ -38,6 +36,3 @@ jobs:
           include-hidden-files: false
         env:
           CARGO_TERM_COLOR: always
-
-
-
