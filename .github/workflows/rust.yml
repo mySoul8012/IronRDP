@@ -1,22 +1,20 @@
-name: Build IronRDP Client for macOS
+name: Build IronRDP Client
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "master" ]
-
-env:
-  CARGO_TERM_COLOR: always
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
+      - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -26,9 +24,11 @@ jobs:
         run: |
           cd crates/ironrdp-client
           cargo build --release
+          ls -l target/release/
 
-      - name: Upload build artifact
+      - name: Upload ironrdp-client artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client-macos
+          name: ironrdp-client
           path: crates/ironrdp-client/target/release/ironrdp-client
+          if-no-files-found: error
