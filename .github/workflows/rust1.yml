@@ -1,0 +1,34 @@
+name: Build IronRDP Client
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build ironrdp-client
+        run: |
+          cd crates/ironrdp-client
+          cargo build --release
+          ls -l target/release/
+
+      - name: Upload ironrdp-client artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ironrdp-client
+          path: crates/ironrdp-client/target/release/ironrdp-client
+          if-no-files-found: error
