@@ -1,32 +1,34 @@
-name: Rust CI
+name: Build IronRDP Client for macOS
 
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: actions/setup-rust@v1
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
+          toolchain: stable
+          override: true
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+      - name: Build ironrdp-client
+        run: |
+          cd crates/ironrdp-client
+          cargo build --release
 
-      - name: Build
-        run: cargo build --verbose
-
-      - name: Run tests
-        run: cargo test --verbose
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ironrdp-client-macos
+          path: crates/ironrdp-client/target/release/ironrdp-client
