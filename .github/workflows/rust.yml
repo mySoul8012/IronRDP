@@ -2,13 +2,11 @@ name: Build IronRDP Client
 
 on:
   push:
-    branches:
-      - '**'  # 监听所有分支的提交
   pull_request:
 
 jobs:
   build:
-    runs-on: macos-latest  # 使用 macOS runner 编译 macOS 应用
+    runs-on: macos-latest  # 使用 macOS runner 以编译 macOS 应用
 
     steps:
       - name: Checkout repository
@@ -24,26 +22,17 @@ jobs:
         run: |
           cd crates/ironrdp-client
           cargo build --release
-          echo "=== 构建完成，列出生成的文件 ==="
-          find target/release -type f -executable
-
-      - name: Find built ironrdp-client binary
-        id: find_binary
-        run: |
-          BINARY_PATH=$(find crates/ironrdp-client/target/release -type f -name ironrdp-client -perm +111 | head -n 1)
-          if [ -z "$BINARY_PATH" ]; then
-            echo "未找到 ironrdp-client 可执行文件。"
-            exit 1
-          fi
-          echo "找到的可执行文件路径：$BINARY_PATH"
-          echo "binary_path=$BINARY_PATH" >> $GITHUB_OUTPUT
+          echo "=== Build output files in target/release ==="
+          ls -l ./
 
       - name: Upload ironrdp-client artifact
         uses: actions/upload-artifact@v4
         with:
           name: ironrdp-client-macos
-          path: ${{ steps.find_binary.outputs.binary_path }}
-          if-no-files-found: error
+          path: crates/ironrdp-client/target/release/ironrdp-client
+          if-no-files-found: warn
           compression-level: 6
           overwrite: false
           include-hidden-files: false
+        env:
+          CARGO_TERM_COLOR: always
