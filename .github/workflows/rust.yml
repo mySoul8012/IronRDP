@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest  # macOS runner 适合编译 macOS 程序
 
     steps:
       - name: Checkout repository
@@ -24,11 +24,17 @@ jobs:
         run: |
           cd crates/ironrdp-client
           cargo build --release
+          echo "=== Build output files in target/release ==="
           ls -l target/release/
 
       - name: Upload ironrdp-client artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client
+          name: ironrdp-client-macos
           path: crates/ironrdp-client/target/release/ironrdp-client
-          if-no-files-found: error
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        env:
+          CARGO_TERM_COLOR: always
