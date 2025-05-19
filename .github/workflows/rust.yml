@@ -26,9 +26,9 @@ jobs:
           cd crates/ironrdp-client
           cargo build --release
           echo "=== Contents of target/release ==="
+          ls -alh /Users/runner/work/IronRDP/IronRDP
           ls -alh target/release
           echo "=== Contents of /Users/runner/work/IronRDP/IronRDP ==="
-          ls -alh /Users/runner/work/IronRDP/IronRDP
           echo "=== Contents of target/release/bundle/osx ==="
           ls -alh /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx
 
