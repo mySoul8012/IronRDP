@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest  # 使用 macOS runner 编译 macOS 应用
+    runs-on: macos-13  # 使用 macOS runner 编译 macOS 应用
 
     steps:
       - name: Checkout repository
