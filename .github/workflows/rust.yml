@@ -24,7 +24,11 @@ jobs:
       - name: Build ironrdp-client .app bundle
         run: |
           cd crates/ironrdp-client
-          cargo bundle --release
+          cargo bundle --release --target-dir /Users/runner/work/IronRDP/IronRDP/target
+          echo "=== Contents of /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx ==="
+          ls -alh /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx
+          echo "=== Contents of /Users/runner/work/IronRDP/IronRDP/target ==="
+          ls -alh /Users/runner/work/IronRDP/IronRDP/target
 
       - name: Upload ironrdp-client .app bundle
         uses: actions/upload-artifact@v4
