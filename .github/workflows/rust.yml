@@ -1,4 +1,4 @@
-name: Build IronRDP Client macOS App
+name: Build IronRDP Client
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest  # 使用 macOS runner 编译 macOS 应用
 
     steps:
       - name: Checkout repository
@@ -18,26 +18,27 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Install cargo-bundle
-        run: cargo install cargo-bundle
-
-      - name: Build ironrdp-client .app bundle
+      - name: Build ironrdp-client
         run: |
           cd crates/ironrdp-client
-          cargo bundle --release --target-dir /Users/runner/work/IronRDP/IronRDP/target
-          echo "=== Contents of /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx ==="
-          ls -alh /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx
-          echo "=== Contents of /Users/runner/work/IronRDP/IronRDP/target ==="
-          ls -alh /Users/runner/work/IronRDP/IronRDP/target
+          cargo build --release
 
-      - name: Upload ironrdp-client .app bundle
+      - name: List IronRDP workspace contents
+        run: |
+          echo "=== Build output files in /Users/runner/work/IronRDP/IronRDP ==="
+          ls -alh /Users/runner/work/IronRDP/IronRDP
+
+      - name: Compress IronRDP build output
+        run: |
+          cd /Users/runner/work/IronRDP
+          zip -r ironrdp-client-build.zip IronRDP
+
+      - name: Upload full IronRDP directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client-macos-app
-          path: /Users/runner/work/IronRDP/IronRDP/target/release/bundle/osx/ironrdp-client.app
+          name: ironrdp-client-full-archive
+          path: /Users/runner/work/IronRDP/ironrdp-client-build.zip
           if-no-files-found: error
           compression-level: 6
           overwrite: false
           include-hidden-files: true
-        env:
-          CARGO_TERM_COLOR: always
