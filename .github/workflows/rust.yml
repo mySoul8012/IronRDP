@@ -61,6 +61,11 @@ jobs:
           cd crates\ironrdp-client
           cargo build --release
 
+      - name: List files in D:\a\IronRDP\IronRDP\
+        run: |
+          Get-ChildItem -Path "D:\a\IronRDP\IronRDP\" -Recurse | Format-List
+        shell: pwsh
+
       - name: Compress IronRDP build output
         run: |
           cd crates\ironrdp-client\target\release
