@@ -66,11 +66,6 @@ jobs:
           Get-ChildItem -Path "D:\a\IronRDP\IronRDP\" -Recurse | Format-List
         shell: pwsh
 
-      - name: Compress IronRDP build output
-        run: |
-          cd  D:\a\IronRDP\IronRDP\target\
-          Compress-Archive -Path ironrdp-client.exe -DestinationPath ironrdp-client-windows.zip
-
       - name: Compress entire target directory
         run: |
           Compress-Archive -Path "D:\a\IronRDP\IronRDP\target" -DestinationPath "D:\a\IronRDP\IronRDP\target.zip"
