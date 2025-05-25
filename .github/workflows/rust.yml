@@ -61,15 +61,16 @@ jobs:
           cd crates\ironrdp-client
           cargo build --release
 
-      - name: List files in D:\a\IronRDP\IronRDP\
+      - name: Install 7-Zip
         run: |
-          Get-ChildItem -Path "D:\a\IronRDP\IronRDP\" -Recurse | Format-List
-        shell: pwsh
+          choco install 7zip -y
+        shell: powershell
 
-      - name: Compress entire target directory
+
+      - name: Compress target directory using 7-Zip
         run: |
-          Compress-Archive -Path "D:\a\IronRDP\IronRDP\target" -DestinationPath "D:\a\IronRDP\IronRDP\target.zip"
-          shell: pwsh
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip D:\a\IronRDP\IronRDP\target.zip D:\a\IronRDP\IronRDP\target\*
+        shell: powershell
           
       - name: Upload target directory zip
         uses: actions/upload-artifact@v4
