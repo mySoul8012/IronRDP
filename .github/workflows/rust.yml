@@ -42,3 +42,36 @@ jobs:
           compression-level: 6
           overwrite: false
           include-hidden-files: true
+
+  build-windows:
+    runs-on: windows-latest  # 使用 Windows runner 编译 Windows 应用
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build ironrdp-client
+        run: |
+          cd crates\ironrdp-client
+          cargo build --release
+
+      - name: Compress IronRDP build output
+        run: |
+          cd crates\ironrdp-client\target\release
+          Compress-Archive -Path ironrdp-client.exe -DestinationPath ironrdp-client-windows.zip
+
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ironrdp-client-windows
+          path: crates/ironrdp-client/target/release/ironrdp-client-windows.zip
+          if-no-files-found: error
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: true
