@@ -19,17 +19,16 @@ native-tls = ["ironrdp-tls/native-tls"]
 [dependencies]
 
 # Protocols
-ironrdp = { path = "../ironrdp" }
-ironrdp-tls = { path = "../ironrdp-tls" }
-sspi = { path = "../sspi", features = ["network_client"] }
-
+ironrdp.workspace = true
+ironrdp-tls.workspace = true
+sspi = { workspace = true, features = ["network_client"] }
 
 # CLI
 clap = { version = "4.2", features = ["derive", "cargo"] }
 exitcode = "1.1"
 
 # logging
-tracing = { path = "../tracing" }
+tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # async, futures
@@ -47,4 +46,3 @@ ironrdp-glutin-renderer = { path = "../glutin-renderer"}
 
 [lints]
 workspace = true
-
