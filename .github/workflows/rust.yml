@@ -68,14 +68,19 @@ jobs:
 
       - name: Compress IronRDP build output
         run: |
-          cd crates\ironrdp-client\target\release
+          cd  D:\a\IronRDP\IronRDP\target\
           Compress-Archive -Path ironrdp-client.exe -DestinationPath ironrdp-client-windows.zip
 
-      - name: Upload Windows build artifact
+      - name: Compress entire target directory
+        run: |
+          Compress-Archive -Path "D:\a\IronRDP\IronRDP\target" -DestinationPath "D:\a\IronRDP\IronRDP\target.zip"
+          shell: pwsh
+          
+      - name: Upload target directory zip
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client-windows
-          path: crates/ironrdp-client/target/release/ironrdp-client-windows.zip
+          name: ironrdp-target-archive
+          path: D:\a\IronRDP\IronRDP\target.zip
           if-no-files-found: error
           compression-level: 6
           overwrite: false
