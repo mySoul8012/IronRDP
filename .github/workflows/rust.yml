@@ -5,46 +5,8 @@ on:
   pull_request:
 
 jobs:
-  build-macos:
-    runs-on: macos-13  # Use macOS runner to compile macOS application
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-
-      - name: Build ironrdp-client-glutin
-        run: |
-          cd crates/ironrdp-client-glutin
-          cargo build --release
-
-      - name: List IronRDP workspace contents
-        run: |
-          echo "=== Build output files in ${{ github.workspace }} ==="
-          ls -alh ${{ github.workspace }}
-
-      - name: Compress IronRDP build output
-        run: |
-          cd ${{ github.workspace }}
-          zip -r ironrdp-client-glutin-build.zip .
-
-      - name: Upload full IronRDP directory as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ironrdp-client-glutin-full-archive
-          path: ${{ github.workspace }}/ironrdp-client-glutin-build.zip
-          if-no-files-found: error
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: true
-
   build-windows:
-    runs-on: windows-latest  # Use Windows runner to compile Windows application
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -58,8 +20,8 @@ jobs:
 
       - name: Build ironrdp-client-glutin
         run: |
-          cd crates\ironrdp-client-glutin
-          cargo build --release
+          cd D:\a\IronRDP\IronRDP
+          cargo build -p ironrdp-client-glutin --release
 
       - name: Install 7-Zip
         run: |
@@ -68,14 +30,14 @@ jobs:
 
       - name: Compress target directory using 7-Zip
         run: |
-          & "C:\Program Files\7-Zip\7z.exe" a -tzip "${{ github.workspace }}\target.zip" "${{ github.workspace }}\target\*"
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip D:\a\IronRDP\IronRDP\target.zip D:\a\IronRDP\IronRDP\target\*
         shell: powershell
 
       - name: Upload target directory zip
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client-glutin-target-archive
-          path: ${{ github.workspace }}\target.zip
+          name: ironrdp-target-archive
+          path: D:\a\IronRDP\IronRDP\target.zip
           if-no-files-found: error
           compression-level: 6
           overwrite: false
