@@ -1,44 +1,61 @@
-name: Build IronRDP GUI Client
+name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build-linux:
+    name: Build on Linux
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: Set up Rust
+      - name: 设置 Rust 工具链
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      - name: Build ironrdp-client-glutin
+      - name: 安装 MinGW-w64 和添加 Windows 目标
         run: |
-          cd D:\a\IronRDP\IronRDP
-          cargo build -p ironrdp-client-glutin --release
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
+          rustup target add x86_64-pc-windows-gnu
 
-      - name: Install 7-Zip
+      - name: 配置 Cargo 使用 MinGW 链接器
         run: |
-          choco install 7zip -y
-        shell: powershell
+          mkdir -p .cargo
+          echo '[target.x86_64-pc-windows-gnu]' >> .cargo/config.toml
+          echo 'linker = "x86_64-w64-mingw32-gcc"' >> .cargo/config.toml
 
-      - name: Compress target directory using 7-Zip
-        run: |
-          & "C:\Program Files\7-Zip\7z.exe" a -tzip D:\a\IronRDP\IronRDP\target.zip D:\a\IronRDP\IronRDP\target\*
-        shell: powershell
-
-      - name: Upload target directory zip
-        uses: actions/upload-artifact@v4
+      - name: 缓存 Cargo 依赖项
+        uses: actions/cache@v4
         with:
-          name: ironrdp-target-archive
-          path: D:\a\IronRDP\IronRDP\target.zip
-          if-no-files-found: error
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: true
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: 构建项目（Linux）
+        run: cargo build --release --all-features
+
+      - name: 运行测试（Linux）
+        run: cargo test --release --all-features
+
+      - name: 构建 GUI 客户端（Linux）
+        run: cargo build --release --bin ironrdp-gui-client
+
+      - name: 交叉编译 GUI 客户端（Windows）
+        run: cargo build --release --bin ironrdp-gui-client --target x86_64-pc-windows-gnu
+
+      - name: 上传 Windows 构建产物
+        uses: actions/upload-artifact@v3
+        with:
+          name: ironrdp-gui-client-windows
+          path: target/x86_64-pc-windows-gnu/release/ironrdp-gui-client.exe
