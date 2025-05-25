@@ -4,6 +4,7 @@ members = [
   "benches",
   "xtask",
   "ffi",
+  crates/ironrdp-client-glutin
 ]
 resolver = "2"
 
