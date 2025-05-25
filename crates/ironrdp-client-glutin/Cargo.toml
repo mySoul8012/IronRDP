@@ -29,7 +29,7 @@ clap = { version = "4.2", features = ["derive", "cargo"] }
 exitcode = "1.1"
 
 # logging
-tracing.workspace = true
+tracing = { path = "../tracing" }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # async, futures
