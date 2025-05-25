@@ -20,7 +20,7 @@ native-tls = ["ironrdp-tls/native-tls"]
 
 # Protocols
 ironrdp = { path = "../ironrdp" }
-ironrdp-tls.workspace = true
+ironrdp-tls = { path = "../ironrdp-tls" }
 sspi = { workspace = true, features = ["network_client"] }
 
 # CLI
