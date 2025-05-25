@@ -1,12 +1,12 @@
-name: Build IronRDP Client
+name: Build IronRDP GUI Client
 
 on:
   push:
   pull_request:
 
 jobs:
-  build:
-    runs-on: macos-13  # 使用 macOS runner 编译 macOS 应用
+  build-macos:
+    runs-on: macos-13  # Use macOS runner to compile macOS application
 
     steps:
       - name: Checkout repository
@@ -18,33 +18,33 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build ironrdp-client
+      - name: Build ironrdp-client-glutin
         run: |
-          cd crates/ironrdp-client
+          cd crates/ironrdp-client-glutin
           cargo build --release
 
       - name: List IronRDP workspace contents
         run: |
-          echo "=== Build output files in /Users/runner/work/IronRDP/IronRDP ==="
-          ls -alh /Users/runner/work/IronRDP/IronRDP
+          echo "=== Build output files in ${{ github.workspace }} ==="
+          ls -alh ${{ github.workspace }}
 
       - name: Compress IronRDP build output
         run: |
-          cd /Users/runner/work/IronRDP
-          zip -r ironrdp-client-build.zip IronRDP
+          cd ${{ github.workspace }}
+          zip -r ironrdp-client-glutin-build.zip .
 
       - name: Upload full IronRDP directory as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-client-full-archive
-          path: /Users/runner/work/IronRDP/ironrdp-client-build.zip
+          name: ironrdp-client-glutin-full-archive
+          path: ${{ github.workspace }}/ironrdp-client-glutin-build.zip
           if-no-files-found: error
           compression-level: 6
           overwrite: false
           include-hidden-files: true
 
   build-windows:
-    runs-on: windows-latest  # 使用 Windows runner 编译 Windows 应用
+    runs-on: windows-latest  # Use Windows runner to compile Windows application
 
     steps:
       - name: Checkout repository
@@ -56,9 +56,9 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build ironrdp-client
+      - name: Build ironrdp-client-glutin
         run: |
-          cd crates\ironrdp-client
+          cd crates\ironrdp-client-glutin
           cargo build --release
 
       - name: Install 7-Zip
@@ -66,17 +66,16 @@ jobs:
           choco install 7zip -y
         shell: powershell
 
-
       - name: Compress target directory using 7-Zip
         run: |
-          & "C:\Program Files\7-Zip\7z.exe" a -tzip D:\a\IronRDP\IronRDP\target.zip D:\a\IronRDP\IronRDP\target\*
+          & "C:\Program Files\7-Zip\7z.exe" a -tzip "${{ github.workspace }}\target.zip" "${{ github.workspace }}\target\*"
         shell: powershell
-          
+
       - name: Upload target directory zip
         uses: actions/upload-artifact@v4
         with:
-          name: ironrdp-target-archive
-          path: D:\a\IronRDP\IronRDP\target.zip
+          name: ironrdp-client-glutin-target-archive
+          path: ${{ github.workspace }}\target.zip
           if-no-files-found: error
           compression-level: 6
           overwrite: false
